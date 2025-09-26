@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Quote</title>
+</head>
+<body>
+    <h1>💬 Quote of the Moment</h1>
+    <p>"{{ quote_data.quotes }}"</p>
+    <p>- {{ quote_data.author }}</p>
+    <form method="get" action="{% url 'get_quotes' %}">
+        <button type="submit">Get Another Quote</button>
+    </form>
+</body>
+</html>
