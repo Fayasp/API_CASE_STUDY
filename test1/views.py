@@ -12,18 +12,13 @@ from django.conf import settings
 def weather_view(request):
     weather_data = None
     error = None
-
-
     api_key = settings.API_KEY
 
     if request.method == "POST":
         city = request.POST.get("city")
        
         url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
-
-
         response = requests.get(url).json()
-        print(response)
 
         if response.get("cod") != 200:
             error = response.get("message", "Error fetching data")
@@ -35,17 +30,38 @@ def weather_view(request):
                 "icon": response["weather"][0]["icon"],
                 "main": response["weather"][0]["main"],  # for background
             }
-        print(weather_data)
-
     return render(request, "weather.html", {"weather": weather_data, "error": error})
 
+def dictionary_lookup(request):
+    word = None
+    meaning = None
+    phonetic = None
+    error = None
 
+    if request.method == "POST":
+        word = request.POST.get("word")
+        url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+        response = requests.get(url).json()
+
+        if isinstance(response, dict) and response.get("title") == "No Definitions Found":
+            error = f"No definitions found for '{word}'"
+        else:
+            try:
+                meaning = response[0]["meanings"][0]["definitions"][0]["definition"]
+                phonetic = response[0].get("phonetic", "")
+            except (KeyError, IndexError):
+                error = "Could not parse dictionary response."
+
+    return render(request, "dictionary.html", {
+        "word": word,
+        "meaning": meaning,
+        "phonetic": phonetic,
+        "error": error,
+    })
 
 def get_quotes(request):
     
-    
     api_key = settings.API_KEY
-
     url = 'https://api.api-ninjas.com/v1/quotes'
     headers = {'X-Api-Key': api_key}
     response = requests.get(url,headers)

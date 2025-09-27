@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>📖 Dictionary Lookup</title>
+</head>
+<body>
+    <h1>Dictionary Lookup</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="word" placeholder="Enter a word" required>
+        <button type="submit">Search</button>
+    </form>
+
+    {% if word %}
+        <h2>Word: {{ word }}</h2>
+        {% if phonetic %}
+            <p><strong>Phonetic:</strong> {{ phonetic }}</p>
+        {% endif %}
+        {% if meaning %}
+            <p><strong>Meaning:</strong> {{ meaning }}</p>
+        {% endif %}
+        {% if error %}
+            <p style="color:red;">{{ error }}</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
