@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<h1>Country Info</h1>
+    <form action="{% url 'get_country_info' %}" method="POST">
+        {% csrf_token %}
+        <input type="text" name="country" placeholder="Enter the country name" id="">
+        <button type="submit"> Search</button>
+    </form>
+
+       {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    {% if name %}
+        <h2>{{ name }}</h2>
+        <img src="{{ flag }}" alt="Flag of {{ name }}" width="150">
+        <p><strong>Capital:</strong> {{ capital }}</p>
+        <p><strong>Population:</strong> {{ population }}</p>
+        <p><strong>Region:</strong> {{ region }}</p>
+        <p><strong>Currency:</strong> {{ currency }}</p>
+    {% endif %}
+    
+</body>
+</html>

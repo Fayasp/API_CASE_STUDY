@@ -42,6 +42,8 @@ def dictionary_lookup(request):
         word = request.POST.get("word")
         url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
         response = requests.get(url).json()
+        print(response)
+        print(type(response))
 
         if isinstance(response, dict) and response.get("title") == "No Definitions Found":
             error = f"No definitions found for '{word}'"
@@ -73,6 +75,39 @@ def get_quotes(request):
     print(quote_data)
 
     return render(request,'quotes.html',{"quote_data":quote_data})
+
+
+def get_country_info(request):
+    country_info = 0
+    country_name= None
+    context = {}
+
+    if request.method == "POST":
+        country_name = request.POST.get("country")
+        url = f"https://restcountries.com/v3.1/name/{country_name}"
+        response = requests.get(url).json()
+        print(type(response))
+
+        
+        if isinstance(response, dict) and response.get("status") == 404:
+            context = {"error": "Country Not Found"}
+            return render(request, "country_info.html", status=404, context=context) 
+        else:
+            context = {
+
+                "name" : response[0]['name']['common'],
+                "capital" : response[0]['capital'][0],
+                "population" : response[0]['population'],
+                "currency": list(response["currencies"].keys())[0] if "currencies" in response else "N/A",
+                "region" : response[0]['region'],
+                "flag": response[0]['flags']['png']
+            }
+
+            return render(request,"country_info.html",context = context)
+
+    return render(request,"country_info.html",context = context)
+        
+    
 
 def dog_image(request):
     response = requests.get('https://dog.ceo/api/breeds/image/random')
